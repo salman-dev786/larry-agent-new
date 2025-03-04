@@ -70,6 +70,11 @@ const formatLeadsForDisplay = (leads, location) => {
     .join("\n");
 };
 
+// Helper function to send SSE data
+const sendSSE = (data) => {
+  res.write(`data: ${JSON.stringify(data)}\n\n`);
+};
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -161,11 +166,6 @@ export default async function handler(req, res) {
         res.setHeader("Connection", "keep-alive");
         res.setHeader("Access-Control-Allow-Origin", "*");
 
-        // Helper function to send SSE data
-        const sendSSE = (data) => {
-          res.write(`data: ${JSON.stringify(data)}\n\n`);
-        };
-
         for (const chunk of formattedResponse.match(/.{1,50}/g) || []) {
           sendSSE({ content: chunk });
         }
@@ -188,6 +188,7 @@ export default async function handler(req, res) {
       });
     }
   } catch (error) {
+    console.log("Error", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 }
