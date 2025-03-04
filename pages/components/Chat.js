@@ -258,8 +258,41 @@ const Chat = () => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
+    } else {
+      const urlParams = new URLSearchParams(window.location.search);
+      let token = urlParams.get("token");
+
+      if (token) {
+        fetchUserData(token);
+      }
     }
   }, []);
+
+  const fetchUserData = async (token) => {
+    if (!token) {
+      console.error("No access token found!");
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/user?accessToken=${token}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} - ${response.statusText}`);
+      }
+
+      const userData = await response.json();
+      localStorage.setItem("user", JSON.stringify(userData));
+      setUser(userData);
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();

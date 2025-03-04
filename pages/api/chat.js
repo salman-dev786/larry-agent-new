@@ -80,11 +80,14 @@ export default async function handler(req, res) {
   try {
     const { message, userId } = req.body;
     if (!message) {
+      sendSSE({ error: "Message is required" });
       return res.status(400).json({ error: "Message is required" });
     }
 
     const user = await User.findById(userId);
     if (!user) {
+      sendSSE({ error: "User not found" });
+
       return res.status(404).json({ error: "User not found" });
     }
 
@@ -97,6 +100,7 @@ export default async function handler(req, res) {
     }
 
     if (user.leadRequests >= user.leadsPerWeek) {
+      sendSSE({ error: "Lead request limit reached for this week" });
       return res
         .status(403)
         .json({ error: "Lead request limit reached for this week" });
@@ -168,11 +172,16 @@ export default async function handler(req, res) {
 
         return res.json({ content: formattedResponse });
       } catch (error) {
+        sendSSE({ error: "Error processing leads request." });
         return res
           .status(500)
           .json({ error: "Error processing leads request." });
       }
     } else {
+      sendSSE({
+        content:
+          "I can help you find leads. Please ask about properties in a specific location.",
+      });
       return res.json({
         content:
           "I can help you find leads. Please ask about properties in a specific location.",
