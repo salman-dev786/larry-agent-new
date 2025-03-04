@@ -1,0 +1,12 @@
+node_modules
+bundle.js
+npm-debug.log
+.next
+/.idea
+.env
+ 
+.passport.js
+.DS_Store
+
+build/
+dist/
