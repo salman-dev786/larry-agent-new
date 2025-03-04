@@ -17,7 +17,8 @@ export default async function handler(req, res) {
     const TOKEN_URL = "https://accounts.myclickfunnels.com/oauth/token";
     const CLIENT_ID = process.env.CLICKFUNNELS_CLIENT_ID;
     const CLIENT_SECRET = process.env.CLICKFUNNELS_CLIENT_SECRET;
-    const REDIRECT_URI = process.env.CLICKFUNNELS_REDIRECT_URI;
+    const REDIRECT_URI =
+      process.env.NEXT_PUBLIC_BACKEND_URL + "/api/auth/callback";
     const Website_URI = process.env.Website_URI;
 
     const response = await axios.post(
