@@ -126,9 +126,15 @@ export default async function handler(req, res) {
       const backendUrl = getCurrentUrl(req);
       console.log("backendUrl", backendUrl);
       try {
-        const response = await axios.get(`${backendUrl}/api/leads`, {
-          params: analysis.parameters,
-        });
+        const response = await axios.get(
+          `${backendUrl}/api/leads`,
+          {
+            params: analysis.parameters,
+          },
+          {
+            validateStatus: false,
+          }
+        );
 
         if (!response.data?.leads) {
           throw new Error("Invalid response format from leads API");

@@ -9,6 +9,8 @@ export default async function handler(req, res) {
   }
 
   try {
+    console.log("BATCHDATA_API_TOKEN:", process.env.BATCHDATA_API_TOKEN);
+
     console.log("=== Processing Lead Search Request ===");
     console.log("Query parameters:", req.query);
 
