@@ -1,7 +1,9 @@
 import { connectToDatabase } from "../../../lib/mongodb";
 import User from "../../../models/user";
 import axios from "axios";
-
+function getCurrentUrl(req) {
+  return `${req.protocol}://${req.get("host")}${req.originalUrl}`;
+}
 export default async function handler(req, res) {
   await connectToDatabase();
 
@@ -14,12 +16,13 @@ export default async function handler(req, res) {
   }
 
   try {
+    const url = getCurrentUrl(req);
+
     const TOKEN_URL = "https://accounts.myclickfunnels.com/oauth/token";
     const CLIENT_ID = process.env.CLICKFUNNELS_CLIENT_ID;
     const CLIENT_SECRET = process.env.CLICKFUNNELS_CLIENT_SECRET;
-    const REDIRECT_URI =
-      process.env.NEXT_PUBLIC_BACKEND_URL + "/api/auth/callback";
-    const Website_URI = process.env.Website_URI;
+    const REDIRECT_URI = url + "/api/auth/callback";
+    const Website_URI = url;
 
     const response = await axios.post(
       TOKEN_URL,
