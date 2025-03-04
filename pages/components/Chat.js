@@ -56,6 +56,7 @@ const Chat = () => {
       console.log("Sending chat request:", {
         url: `${API_URL}/api/chat`,
         message: userMessage,
+        userId: userData?._id,
       });
 
       const response = await fetch(`${API_URL}/api/chat`, {
@@ -202,7 +203,7 @@ const Chat = () => {
       if (!allowedOrigins.includes(event.origin)) return;
 
       if (event.data.type === "CHAT_MESSAGE") {
-        handleUserMessage(event.data.message);
+        handleUserMessage(event.data.message, user);
       }
     };
 
