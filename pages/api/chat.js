@@ -3,6 +3,7 @@ import axios from "axios";
 import Lead from "../../models/lead";
 import User from "../../models/user";
 import { connectToDatabase } from "../../lib/mongodb";
+import { getCurrentUrl } from "./auth/callback";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -122,8 +123,10 @@ export default async function handler(req, res) {
     );
 
     if (analysis.shouldSearchLeads && missingParams.length === 0) {
+      const backendUrl = getCurrentUrl(req);
+      console.log("backendUrl", backendUrl);
       try {
-        await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/leads`, {
+        const response = await axios.get(`${backendUrl}/api/leads`, {
           params: analysis.parameters,
         });
 
@@ -172,6 +175,7 @@ export default async function handler(req, res) {
 
         return res.json({ content: formattedResponse });
       } catch (error) {
+        console.log("Error lead req", error);
         sendSSE({ error: "Error processing leads request." });
         return res
           .status(500)

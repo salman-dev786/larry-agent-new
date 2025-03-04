@@ -10,7 +10,11 @@ export function getCurrentUrl(req) {
   const protocol = req.headers["x-forwarded-proto"] || "http"; // Detect HTTPS if behind a proxy
   const host = req.headers.host; // Get the host
   const url = `${protocol}://${host}${req.url}`; // Construct full URL
-  const baseUrl = getBaseUrl(url);
+  const isLocalHost = String(url).includes("localhost");
+  console.log("url ==>", String(url).includes("localhost"));
+  const baseUrl = isLocalHost ? "http://localhost:3000" : getBaseUrl(url);
+  console.log("baseUrl ==>", baseUrl);
+
   return baseUrl;
 }
 export default async function handler(req, res) {
