@@ -70,17 +70,17 @@ const formatLeadsForDisplay = (leads, location) => {
     .join("\n");
 };
 
-// Helper function to send SSE data
-const sendSSE = (data) => {
-  res.write(`data: ${JSON.stringify(data)}\n\n`);
-};
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   await connectToDatabase();
+
+  // Helper function to send SSE data
+  const sendSSE = (data) => {
+    res.write(`data: ${JSON.stringify(data)}\n\n`);
+  };
 
   try {
     const { message, userId } = req.body;
