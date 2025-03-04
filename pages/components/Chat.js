@@ -4,7 +4,6 @@ import { ChevronDown, CircleUser } from "lucide-react";
 // import "./Chat.module.css";
 
 // Since we're using the same server, we can just use relative paths
-const API_URL = "http://localhost:3000";
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
@@ -15,6 +14,24 @@ const Chat = () => {
   const chatContainerRef = useRef(null);
   const messagesRef = useRef(null);
   const [user, setUser] = useState(null);
+
+  function getBaseUrl() {
+    if (typeof window !== "undefined") {
+      const url = window.location.origin; // Get full base URL
+      const domainParts = new URL(url).hostname.split(".");
+
+      // Find the index of ".app"
+      const appIndex = domainParts.indexOf("app");
+      if (appIndex !== -1) {
+        return `${window.location.protocol}//${domainParts
+          .slice(0, appIndex + 1)
+          .join(".")}`;
+      }
+
+      return url; // Return full origin if ".app" is not found
+    }
+    return null; // Return null if running on the server
+  }
 
   const handleUserMessage = useCallback(async (userMessage, userData) => {
     if (!userMessage.trim()) return;
@@ -33,6 +50,8 @@ const Chat = () => {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
+      const API_URL = getBaseUrl();
 
       console.log("Sending chat request:", {
         url: `${API_URL}/api/chat`,
