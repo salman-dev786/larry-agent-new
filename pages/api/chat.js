@@ -4,6 +4,7 @@ import Lead from "../../models/lead";
 import User from "../../models/user";
 import { connectToDatabase } from "../../lib/mongodb";
 import { getCurrentUrl } from "./auth/callback";
+import { fetchLeads } from "../../utils/lead-function";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -126,15 +127,19 @@ export default async function handler(req, res) {
       const backendUrl = getCurrentUrl(req);
       console.log("backendUrl", backendUrl);
       try {
-        const response = await axios.get(
-          `${backendUrl}/api/leads`,
-          {
-            params: analysis.parameters,
-          },
-          {
-            validateStatus: false,
-          }
-        );
+        let response = await fetchLeads(analysis.parameters);
+
+        response = { data: response };
+
+        // const response = await axios.get(
+        //   `${backendUrl}/api/leads`,
+        //   {
+        //     params: analysis.parameters,
+        //   },
+        //   {
+        //     validateStatus: false,
+        //   }
+        // );
 
         if (!response.data?.leads) {
           throw new Error("Invalid response format from leads API");
