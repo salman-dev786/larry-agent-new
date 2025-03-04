@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     const CLIENT_SECRET = process.env.CLICKFUNNELS_CLIENT_SECRET;
     // const REDIRECT_URI = process.env.CLICKFUNNELS_REDIRECT_URI;
     const REDIRECT_URI = getCurrentUrl(req) + "/api/auth/callback";
-    const Website_URI = process.env.Website_URI;
+    const Website_URI = getCurrentUrl(req);
 
     const response = await axios.post(
       TOKEN_URL,
