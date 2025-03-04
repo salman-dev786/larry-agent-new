@@ -1,8 +1,11 @@
 import { connectToDatabase } from "../../../lib/mongodb";
 import User from "../../../models/user";
 import axios from "axios";
-function getCurrentUrl(req) {
-  return `${req.protocol}://${req.get("host")}${req.originalUrl}`;
+export function getCurrentUrl(req) {
+  const protocol = req.headers["x-forwarded-proto"] || "http"; // Detect HTTPS if behind a proxy
+  const host = req.headers.host; // Get the host
+  const url = `${protocol}://${host}${req.url}`; // Construct full URL
+  return url;
 }
 export default async function handler(req, res) {
   await connectToDatabase();
