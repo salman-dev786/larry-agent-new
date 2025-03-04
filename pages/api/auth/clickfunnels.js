@@ -1,8 +1,13 @@
+function getBaseUrl(url) {
+  const match = url.match(/^https?:\/\/([^/]+\.app)/);
+  return match ? match[0] : null;
+}
 export function getCurrentUrl(req) {
   const protocol = req.headers["x-forwarded-proto"] || "http"; // Detect HTTPS if behind a proxy
   const host = req.headers.host; // Get the host
   const url = `${protocol}://${host}${req.url}`; // Construct full URL
-  return url;
+  const baseUrl = getBaseUrl(url);
+  return baseUrl;
 }
 export default function handler(req, res) {
   const CLIENT_ID = process.env.CLICKFUNNELS_CLIENT_ID;

@@ -1,11 +1,17 @@
 import { connectToDatabase } from "../../../lib/mongodb";
 import User from "../../../models/user";
 import axios from "axios";
+
+function getBaseUrl(url) {
+  const match = url.match(/^https?:\/\/([^/]+\.app)/);
+  return match ? match[0] : null;
+}
 export function getCurrentUrl(req) {
   const protocol = req.headers["x-forwarded-proto"] || "http"; // Detect HTTPS if behind a proxy
   const host = req.headers.host; // Get the host
   const url = `${protocol}://${host}${req.url}`; // Construct full URL
-  return url;
+  const baseUrl = getBaseUrl(url);
+  return baseUrl;
 }
 export default async function handler(req, res) {
   await connectToDatabase();
