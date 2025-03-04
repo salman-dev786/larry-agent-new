@@ -286,6 +286,8 @@ const Chat = () => {
         throw new Error(`Error: ${response.status} - ${response.statusText}`);
       }
 
+      console.log("user api chat", user);
+
       const userData = await response.json();
       localStorage.setItem("user", JSON.stringify(userData));
       setUser(userData);
