@@ -38,10 +38,6 @@ function Home() {
         },
       });
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} - ${response.statusText}`);
-      }
-
       const userData = await response.json();
       localStorage.setItem("user", JSON.stringify(userData));
     } catch (error) {

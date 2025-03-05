@@ -145,8 +145,20 @@ export default async function handler(req, res) {
           throw new Error("Invalid response format from leads API");
         }
 
+        // Get all stored leads
+        const allLeads = await Lead.find({}, "data._id");
+        const storedLeadIds = new Set(allLeads.map((lead) => lead.data._id));
+
         const storedLeads = await Promise.all(
           response.data.leads.map(async (lead) => {
+            // Check if the lead is already stored
+            if (storedLeadIds.has(lead._id)) {
+              console.log("Skipping duplicate lead:", lead._id);
+              sendSSE({
+                error: "No lead found in the specific location.",
+              });
+              return null; // Skip this lead
+            }
             if (
               !analysis.parameters.street ||
               !analysis.parameters.city ||
@@ -164,6 +176,7 @@ export default async function handler(req, res) {
         );
 
         if (storedLeads.every((item) => item === null)) {
+          sendSSE({ error: "No lead found in the specific location." });
           return res.json({
             content: "No lead found in the specific location.",
           });
